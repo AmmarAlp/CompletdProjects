@@ -111,27 +111,32 @@ Belirli bir ödünç alma kaydını siler.
 #### Get All Employees
 Tüm çalışanları listeler.
 - **HTTP GET**: `/api/Employees`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Admin (Admin) rolü.
 
 #### Get Employee by Id
 Belirli bir çalışanı getirir.
 - **HTTP GET**: `/api/Employees/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Admin (Admin) rolü.
+
+#### Get Employee Self
+Oturum açan çalışanın kendisini getirir.
+- **HTTP GET**: `/api/Employees/Self`
+- **Yetki Gereksinimi**: Employee (Employee) rolü.
 
 #### Create Employee
 Yeni bir çalışan ekler.
 - **HTTP POST**: `/api/Employees`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Admin (Admin) rolü.
 
 #### Update Employee
 Belirli bir çalışanın bilgilerini günceller.
 - **HTTP PUT**: `/api/Employees/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Admin (Admin) rolü.
 
 #### Delete Employee
 Belirli bir çalışanı siler.
 - **HTTP DELETE**: `/api/Employees/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Admin (Admin) rolü.
 
 
 
@@ -142,27 +147,32 @@ Belirli bir çalışanı siler.
 #### Get All Members
 Tüm üyeleri listeler.
 - **HTTP GET**: `/api/Members`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Çalışan (Employee) ve Admin (Admin) rolü.
 
 #### Get Member by Id
 Belirli bir üyeyi getirir.
 - **HTTP GET**: `/api/Members/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Çalışan (Employee) ve Admin (Admin) rolü.
+
+#### Get Member Self
+Oturum açan üyenin kendisini getirir.
+- **HTTP GET**: `/api/Members/Self`
+- **Yetki Gereksinimi**: Üye (Member) rolü.
 
 #### Create Member
 Yeni bir üye ekler.
 - **HTTP POST**: `/api/Members`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Çalışan (Employee) ve Admin (Admin) rolü.
 
 #### Update Member
 Belirli bir üyenin bilgilerini günceller.
 - **HTTP PUT**: `/api/Members/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Çalışan (Employee) ve Admin (Admin) rolü.
 
 #### Delete Member
 Belirli bir üyeyi siler.
 - **HTTP DELETE**: `/api/Members/{id}`
-- **Yetki Gereksinimi**: Çalışan (Employee) rolü.
+- **Yetki Gereksinimi**: Çalışan (Employee) ve Admin (Admin) rolü.
 
 
 
@@ -179,7 +189,12 @@ Kullanıcıyı çıkış yaptırır.
 - **HTTP GET**: `/api/Registrations/Logout`
 - **Yetki Gereksinimi**: Kullanıcı giriş yapmış olmalıdır.
 
+## Kullanım ve Yetkilendirme
 
+Uygulama ilk açıldığında, bir Admin rolü oluşturulur ve bu role ait bir kullanıcı için şifre belirlenir.
+Kullanıcı, verilen token ile oturum açarak işlemlerine devam eder. 
+Çalışanlar, yalnızca `Get Employee Self` işlemini gerçekleştirebilirken, diğer çalışan işlemleri için admin yetkisi gereklidir. 
+Üye işlemlerinde ise, `Get Member Self` hariç, admin ve employee yetkisi gerekmektedir.
 
 
 
@@ -209,4 +224,4 @@ Projeyi kendi makinenizde çalıştırmak için şu adımları izleyin:
 
 2. **Proje Klonlama**:
    ```bash
-   git clone https://github.com/AmmarAlp/CompletdProjects.git
+   git clone https://github.com/AmmarAlp/Lirary-App.git

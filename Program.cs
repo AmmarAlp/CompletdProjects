@@ -13,7 +13,7 @@ namespace Library_API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         LibraryAPIsContext _context;
         RoleManager<IdentityRole> _roleManager;
@@ -57,9 +57,7 @@ public class Program
         });
 
         builder.Services.AddAuthorization();
-
         builder.Services.AddControllers();
-
         // Configure Swagger/OpenAPI
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -99,11 +97,20 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthentication();
         app.UseAuthorization();
-
         app.MapControllers();
+
+        // Auto migrate
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            IServiceProvider scopedProvider = scope.ServiceProvider;
+
+            _context = scopedProvider.GetRequiredService<LibraryAPIsContext>();
+
+            await _context.Database.MigrateAsync();
+        }
+
 
         //Admin User Config.
         IServiceProvider serviceProvider = app.Services.CreateScope().ServiceProvider;
@@ -113,17 +120,16 @@ public class Program
 
         
 
-        if (_roleManager.FindByNameAsync("Admin").Result == null)
+        if (await _roleManager.FindByNameAsync("Admin") == null)
         {
             identityRole = new IdentityRole("Admin");
-            _roleManager.CreateAsync(identityRole).Wait();
+            await _roleManager.CreateAsync(identityRole);
         }
-        if (_userManager.FindByNameAsync("Admin").Result == null)
+        if (await _userManager.FindByNameAsync("Admin") == null)
         {
-            applicationUser = new ApplicationUser();
-            applicationUser.UserName = "Admin";
-            _userManager.CreateAsync(applicationUser, "Admin123!").Wait();
-            _userManager.AddToRoleAsync(applicationUser, "Admin").Wait();
+            applicationUser = new ApplicationUser { UserName = "Admin" };
+            await _userManager.CreateAsync(applicationUser, "Admin123!");
+            await _userManager.AddToRoleAsync(applicationUser, "Admin");
         }
 
         app.Run();
