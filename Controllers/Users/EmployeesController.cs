@@ -144,8 +144,18 @@ namespace LibraryAPIs.Controllers.Identity
                 return Problem("Entity set 'LibraryAPIsContext.Employee'  is null.");
             }
 
-            await _userManager.CreateAsync(employee.ApplicationUser!, password);
-            await _userManager.AddToRoleAsync(employee.ApplicationUser!, "Employee");
+            var result = await _userManager.CreateAsync(employee.ApplicationUser!, password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            // Kullanıcı oluşturulduktan sonra rol atama işlemi
+            var roleResult = await _userManager.AddToRoleAsync(employee.ApplicationUser!, "Employee");
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest(roleResult.Errors);
+            }
 
             employee.Id = employee.ApplicationUser!.Id;
             employee.ApplicationUser = null;

@@ -144,8 +144,18 @@ namespace LibraryAPIs.Controllers.Identity
               return Problem("Entity set 'LibraryAPIsContext.Member'  is null.");
           }
 
-            _userManager.CreateAsync(member.ApplicationUser!, password).Wait();
-            _userManager.AddToRoleAsync(member.ApplicationUser!, "Member").Wait();
+            var result = await _userManager.CreateAsync(member.ApplicationUser!, password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            // Kullanıcı oluşturulduktan sonra rol atama işlemi
+            var roleResult = await _userManager.AddToRoleAsync(member.ApplicationUser!, "Member");
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest(roleResult.Errors);
+            }
             member.Id = member.ApplicationUser!.Id;
             member.ApplicationUser = null;
             _context.Member.Add(member);
